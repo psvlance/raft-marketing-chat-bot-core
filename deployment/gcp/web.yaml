@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: web
+  name: web
+  namespace: raft-chat-bot-marketing
+spec:
+  selector:
+    matchLabels:
+      app: web
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - image: gcs://.../raft-chat-bot-marketing-image:latest
+        imagePullPolicy: IfNotPresent
+        name: web
+        command:
+          - uvicorn
+          - web:app
+        ports:
+          - containerPort: 8000

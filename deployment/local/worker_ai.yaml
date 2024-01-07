@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: raft-chat-bot-marketing-worker-ai
+  name: raft-chat-bot-marketing-worker-ai
+  namespace: raft-chat-bot-marketing
+spec:
+  selector:
+    matchLabels:
+      app: raft-chat-bot-marketing-worker-ai
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: raft-chat-bot-marketing-worker-ai
+    spec:
+      containers:
+      - image: raft-chat-bot-marketing-image:latest
+        tty: true
+        imagePullPolicy: Never
+        name: raft-chat-bot-marketing-worker-ai
+        command: ['python', 'worker_ai.py']
+        env:
+          - name: REDIS_URL
+            value: REDIS_URL
+          - name: ELASTIC_URL
+            value: ELASTIC_URL
+          - name: ENVIRONMENT
+            value: local
+        volumeMounts:
+          - name: code
+            mountPath: /app
+      volumes:
+        - name: code
+          hostPath:
+            path: /minikube-host
+            type: Directory

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: raft-chat-bot-marketing-redis
+  namespace: raft-chat-bot-marketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: raft-chat-bot-marketing-redis
+  template:
+    metadata:
+      labels:
+        app: raft-chat-bot-marketing-redis
+    spec:
+      containers:
+        - name: raft-chat-bot-marketing-redis
+          image: redis:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
+          resources:
+            requests:
+              cpu: "100m"
+            limits:
+              cpu: "0.2"
+          volumeMounts:
+            - name: redis-persistent-storage
+              mountPath: /data
+      volumes:
+      - name: redis-persistent-storage
+        persistentVolumeClaim:
+          claimName: redis-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: raft-chat-bot-marketing-redis-service
+  namespace: raft-chat-bot-marketing
+spec:
+  selector:
+    app: raft-chat-bot-marketing-redis
+  ports:
+  - protocol: TCP
+    port: 6379
+    targetPort: 6379
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pv-claim
+  namespace: raft-chat-bot-marketing
+  annotations:
+    volume.alpha.kubernetes.io/storage-class: anything
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

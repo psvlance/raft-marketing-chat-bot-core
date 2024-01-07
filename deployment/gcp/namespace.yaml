@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: raft-chat-bot-marketing
+  labels:
+    app.kubernetes.io/name: raft-chat-bot-marketing
+    app.kubernetes.io/instance: raft-chat-bot-marketing
