@@ -17,6 +17,8 @@ UseCase
 ### General 
 You should copy ./deployment/.env.example to ./deployment/.env and fill it with your data.  
 You need to install kubectl, gcloud, terraform, docker, minikube
+You may set directory raft-marketing-chat-bot/src as Source directory in a PyCharm IDE
+
 
 ### Local
 You should use minikube for local development. Also, you need to use Elastic instance somewhere and fill .env variable

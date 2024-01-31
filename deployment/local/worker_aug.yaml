@@ -2,37 +2,29 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: raft-chat-bot-marketing-worker-aug
-  name: raft-chat-bot-marketing-worker-aug
-  namespace: raft-chat-bot-marketing
+    app: raft-marketing-chat-bot-worker-aug
+  name: raft-marketing-chat-bot-worker-aug
+  namespace: default
 spec:
   selector:
     matchLabels:
-      app: raft-chat-bot-marketing-worker-aug
+      app: raft-marketing-chat-bot-worker-aug
   replicas: 1
   template:
     metadata:
       labels:
-        app: raft-chat-bot-marketing-worker-aug
+        app: raft-marketing-chat-bot-worker-aug
     spec:
       containers:
-      - image: raft-chat-bot-marketing-image:latest
-        tty: true
+      - image: raft-marketing-chat-bot:0.1.0
         imagePullPolicy: Never
-        name: raft-chat-bot-marketing-worker-aug
+        name: worker-aug
         command: ['python', 'worker_aug.py']
-        env:
-          - name: REDIS_URL
-            value: REDIS_URL
-          - name: ELASTIC_URL
-            value: ELASTIC_URL
-          - name: ENVIRONMENT
-            value: local
         volumeMounts:
           - name: code
             mountPath: /app
       volumes:
         - name: code
           hostPath:
-            path: /minikube-host
+            path: /raft-marketing-chat-bot
             type: Directory
