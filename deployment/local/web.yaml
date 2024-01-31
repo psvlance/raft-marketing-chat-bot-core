@@ -2,30 +2,24 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: raft-chat-bot-marketing-web
-  name: raft-chat-bot-marketing-web
-  namespace: raft-chat-bot-marketing
+    app: raft-marketing-chat-bot-web
+  name: raft-marketing-chat-bot-web
+  namespace: default
 spec:
   selector:
     matchLabels:
-      app: raft-chat-bot-marketing-web
+      app: raft-marketing-chat-bot-web
   replicas: 1
   template:
     metadata:
       labels:
-        app: raft-chat-bot-marketing-web
+        app: raft-marketing-chat-bot-web
     spec:
       containers:
-      - image: raft-chat-bot-marketing-image:latest
-        tty: true
+      - image: raft-marketing-chat-bot:0.1.0
         imagePullPolicy: Never
-        name: raft-chat-bot-marketing-web
-        command:
-          - uvicorn
-          - web:app
-        volumeMounts:
-          - name: code
-            mountPath: /app
+        name: web
+        command: ['uvicorn', 'main:app', '--reload']
         ports:
           - containerPort: 8000
         env:
@@ -35,23 +29,25 @@ spec:
             value: "8000"
           - name: REDIS_URL
             value: REDIS_URL
-          - name: ENVIRONMENT
-            value: local
+        tty: true
+        volumeMounts:
+          - name: code
+            mountPath: /app
       volumes:
         - name: code
           hostPath:
-            path: /minikube-host
+            path: /raft-marketing-chat-bot
             type: Directory
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: raft-chat-bot-marketing-web-service
-  namespace: raft-chat-bot-marketing
+  name: raft-marketing-chat-bot-web-service
+  namespace: default
 spec:
   type: NodePort
   selector:
-    app: raft-chat-bot-marketing-web
+    app: raft-marketing-chat-bot-web
   ports:
   - protocol: TCP
     port: 8000
